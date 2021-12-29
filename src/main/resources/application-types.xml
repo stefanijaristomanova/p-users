@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="users_json" format="csv">
+      <types:shape format="weave" example="examples/localData-5.csv"><![CDATA[%dw 2.0
+
+type users_json = Array<{|  column_0: String,   column_1: String,   column_2: String,   column_3: String,   column_4: String|}> {"isQuotedString": "false",
+"header": "false",
+"headerLineNumber": "0",
+"separator": ";"}
+
+]]></types:shape>
+      <types:properties>
+        <types:property name="headerLineNumber" value="0"/>
+        <types:property name="header" value="false"/>
+        <types:property name="isQuotedString" value="false"/>
+        <types:property name="separator" value=";"/>
+      </types:properties>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#27134a81-7292-4645-95f2-e672ee1375dc">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="users_json"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

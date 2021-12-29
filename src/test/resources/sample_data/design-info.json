@@ -1,0 +1,17 @@
+{
+  "sampleData": {
+    "c64c168e-72e8-469b-bde5-beb9ee1c858f": {
+      "payload": "sample_data/list_csv.csv"
+    },
+    "979039c0-e381-4206-830c-3eb67b2394f9": {
+      "payload": "sample_data/defaultbinarytype.csv",
+      "attributes": "sample_data/localfileattributes.dwl"
+    },
+    "5193e1f5-5d7d-4b80-86e0-01be69b55e88": {
+      "payload": "sample_data/defaultbinarytype_1.csv"
+    },
+    "1d1ce4c3-dd89-4f95-bf78-92739c6a975f": {
+      "payload": "sample_data/defaultbinarytype_2.csv"
+    }
+  }
+}

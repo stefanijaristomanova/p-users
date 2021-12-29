@@ -1,0 +1,21 @@
+https:
+  port: "8081"
+  host: "localhost"
+  path: "users"
+s-db:
+  port: "8082"
+  host: "localhost"
+  path: "dbUsers" 
+  client_id: "c47b595d20b3432c96a9128bde4c3dcd"
+  client_secret: "82bcF2D5A77A46f5B8BD4a5B7827f06f"
+s-localFile:
+  port: "8083"
+  host: "localhost"
+  path: "localUsers"
+  client_id: "c47b595d20b3432c96a9128bde4c3dcd"
+  client_secret: "82bcF2D5A77A46f5B8BD4a5B7827f06f"
+s-ftp:
+  port: "8084"
+  host: "localhost"
+  path: "ftpUsers"
+  

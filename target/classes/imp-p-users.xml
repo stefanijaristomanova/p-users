@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<file:config name="File_Config" doc:name="File Config" doc:id="0aa5169e-8cae-45fb-abe7-57065ff0288f" >
+		<file:connection workingDir="C:\Users\Igor Stojkoski\Desktop\valionDoc\readFile" />
+	</file:config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="fd23d852-ee07-496a-9ee0-2c62ee93ac91" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config1" doc:name="Database Config" doc:id="e972f8b9-d79f-409a-9ddd-b793d6cf193f">
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="12345" database="usersdb" />
+	</db:config>
+	<http:request-config name="HTTP_Request_configurationS-DB" doc:name="HTTP Request configuration" doc:id="51f62570-10ef-4b78-b4b5-721bf6e7ed9c" responseTimeout="30000">
+		<http:request-connection host="${s-db.host}" port="${s-db.port}" connectionIdleTimeout="300000">
+			<reconnection >
+				<reconnect />
+			</reconnection>
+		</http:request-connection>
+		<http:default-headers >
+			<http:default-header key="client_id" value="${s-db.client_id}" />
+			<http:default-header key="client_secret" value="${s-db.client_secret}" />
+		</http:default-headers>
+	</http:request-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="42d45ffd-2184-41ad-b5df-e0a6f389af9f" file="config.yaml" />
+	<http:request-config name="HTTP_Request_configurationS-FTP" doc:name="HTTP Request configuration" doc:id="051120d2-ab97-4ab4-b8b0-27ba4e1cf762" responseTimeout="3000000">
+		<http:request-connection host="${s-ftp.host}" port="${s-ftp.port}" connectionIdleTimeout="30000000">
+			<reconnection >
+				<reconnect />
+			</reconnection>
+		</http:request-connection>
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configurationS-localFile" doc:name="HTTP Request configuration" doc:id="aed85141-84df-4d82-85ad-b883f66700b0" responseTimeout="3000000">
+		<http:request-connection host="${s-localFile.host}" port="${s-localFile.port}" connectionIdleTimeout="3000000">
+			<reconnection >
+				<reconnect />
+			</reconnection>
+		</http:request-connection>
+		<http:default-headers >
+			<http:default-header key="client_id" value="${s-localFile.client_id}" />
+			<http:default-header key="client_secret" value="${s-localFile.client_secret}" />
+		</http:default-headers>
+	</http:request-config>
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="256a31cf-c8aa-479b-8a7e-626121f2c430" >
+		<jms:active-mq-connection >
+			<jms:factory-configuration />
+		</jms:active-mq-connection>
+	</jms:config>
+	<flow name="processUserData" doc:id="a7fe48cf-3109-4e8b-9b2e-9e9e36643d2a" >
+		<http:listener doc:name="/users" doc:id="afd60193-8c94-4633-ad72-ea64a92573ac" config-ref="HTTP_Listener_config" path="/users" />
+		<scatter-gather doc:name="Scatter-Gather" doc:id="ad42c85b-5f41-42c0-be5f-cb8b4afdf5f7" timeout="50000000000" maxConcurrency="3">
+			<route >
+				<http:request method="GET" doc:name="to s-db" doc:id="dd8a1faf-7b31-486c-aec6-fda21cb49029" config-ref="HTTP_Request_configurationS-DB" path="${s-db.path}"/>
+			</route>
+			<route >
+				<http:request method="GET" doc:name="to s-localFile" doc:id="ae80dc5f-3d2d-46e8-b025-5debb3a6dd00" path="${s-localFile.path}" config-ref="HTTP_Request_configurationS-localFile"/>
+			</route>
+			<route >
+				<http:request method="GET" doc:name="to s-ftp" doc:id="96b17258-41f3-4f58-9cce-ea6787310635" config-ref="HTTP_Request_configurationS-FTP" path="${s-ftp.path}"/>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="flatten payload" doc:id="4250ea51-72ab-450d-8b71-3cd013d637a5">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+Users : flatten(payload..payload)]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+		<jms:publish doc:name="to usersQ" doc:id="2b4bdba5-1bf3-49f9-b256-c4637c414240" destination="usersQ" config-ref="JMS_Config">
+		</jms:publish>
+		<logger level="INFO" doc:name="published status" doc:id="f3f8e60d-dd3a-4543-9c46-39d74c3cbc86" message="published to users Q" />
+	</flow>
+	<flow name="e-users" doc:id="699bbb9c-91ac-4ab6-9842-54fe1e43da9a" >
+		<http:listener doc:name="/allUsers" doc:id="05899fd7-9aac-4f75-88c3-44324ad3c151" config-ref="HTTP_Listener_config" path="/allUsers"/>
+		<jms:consume doc:name="usersQ" doc:id="36c32b2e-6030-4b8b-937f-0fcd08f05fc9" config-ref="JMS_Config" destination="usersQ"/>
+	</flow>
+</mule>

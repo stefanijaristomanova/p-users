@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="first-valion-project-test-suite.xml" />
+	<munit:test name="first-valion-project-test-suite-first-valion-projectFlowTest" doc:id="31ada491-4c75-4868-bfde-8f39ebe7a931" description="Test">
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to first-valion-projectFlow" doc:id="fb87d98f-34ec-47a0-ae0e-4183726d85c3" name="first-valion-projectFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="795ba525-e79e-4ed6-85d6-ad3cd78a51c6" message="Payload is null" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="first-valion-project-test-suite-first-valion-projectFlowTest1" doc:id="f5ea2abd-c86d-46e5-9b76-3f04e96302be" description="Test">
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to first-valion-projectFlow" doc:id="5bf5bec1-797f-4b77-8e63-710ccdb7cd7c" name="first-valion-projectFlow"/>
+		</munit:execution>
+	</munit:test>
+	<munit:test name="first-valion-project-test-suite-first-valion-projectFlowTest2" doc:id="6d2231c7-5b0e-4e5b-a1eb-ef5ccefeb9c6" description="Test">
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to first-valion-projectFlow" doc:id="37b30054-376a-49a1-83ad-be99e83b1352" name="first-valion-projectFlow"/>
+		</munit:execution>
+	</munit:test>
+
+
+</mule>
